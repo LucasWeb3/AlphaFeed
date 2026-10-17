@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => {
   for (const [k, v] of Object.entries(env)) {
     if (process.env[k] === undefined) process.env[k] = v
   }
+  const found = Object.keys(env).filter((k) => k.includes('GEMINI'))
+  if (found.length) console.log('[alphafeed] loaded env:', found.join(', '))
+  else console.log('[alphafeed] no GEMINI_* key found in env files')
 
   return {
     plugins: [react(), apiPlugin()],
