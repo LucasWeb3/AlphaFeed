@@ -2,7 +2,7 @@
 // Key is read from process.env.GEMINI_API_KEY (set in Vercel project settings
 // as a server-only env var — never bundled into the browser).
 
-export const config = { runtime: 'nodejs' }
+export const config = { runtime: 'nodejs', maxDuration: 60 }
 
 const KEY = process.env.GEMINI_API_KEY
 const MODEL = 'gemini-flash-latest'

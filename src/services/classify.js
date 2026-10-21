@@ -71,11 +71,17 @@ async function classifyBatch(batch) {
     initialDirection: s.direction,
   }))
 
+  // Abort the Gemini call after 30s so a slow backend never stalls the
+  // whole refresh — fall back to heuristic scores if it misses.
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 30_000)
+
   try {
     const res = await fetch('/api/classify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: payload }),
+      signal: ctrl.signal,
     })
 
     if (!res.ok) {
@@ -107,6 +113,8 @@ async function classifyBatch(batch) {
   } catch (err) {
     console.warn('[classify] error:', err.message)
     return batch
+  } finally {
+    clearTimeout(timer)
   }
 }
 
